@@ -9,60 +9,86 @@ console.log('Sample JavaScript #3 HW #15');
  * если нет – то счет продолжается
  */
 
-// console.log(counter()); // 0
+var counter = (function () {
+    var a = 0;
+    return function (n) {
+        if (n !== undefined) a = n;
+        return a++;
+    }
+}())
 
-// console.log(counter()); // 1
+console.log(counter()); // 0
 
-// console.log(counter(100)); // 100
+console.log(counter()); // 1
 
-// console.log(counter()); // 101
+console.log(counter(100)); // 100
 
-// console.log(counter(500)); // 500
+console.log(counter()); // 101
 
-// console.log(counter()); // 501
+console.log(counter(500)); // 500
 
-// console.log(counter(0)); // 0
+console.log(counter()); // 501
 
-// console.log(counter()); // 1
+console.log(counter(0)); // 0
+
+console.log(counter()); // 1
 
 /*
- * #2
- *
- * Создайте функцию counting, которая должна реализовать три метода с помощью замыкания:
- * первоначальное значение счетчика – 0
- * counting.value() – возвращает значение счетчика
- * counting.value(n) – устанавливает значение счетчика, возвращает новое значение
- * counting.increment() – увеличивает значение счетчика на 1
- * counting.decrement() – уменьшает значение счетчика на 1
- */
+* #2
+*
+* Создайте функцию counting, которая должна реализовать три метода с помощью замыкания:
+* первоначальное значение счетчика – 0
+* counting.value() – возвращает значение счетчика
+* counting.value(n) – устанавливает значение счетчика, возвращает новое значение
+* counting.increment() – увеличивает значение счетчика на 1
+* counting.decrement() – уменьшает значение счетчика на 1
+*/
 
-// console.log(counting.value()); // 0
+console.log('===================');
 
-// counting.increment();
+var counting = (function () {
+    var a = 0;
+    return {
+        value(n) {
+            if (n !== undefined) a = n;
+            return a;
+    },
+    decrement() {
+        a--;
+    },
+    increment() {
+        a++;
+    }
+    }
+}())
 
-// counting.increment();
+console.log(counting.value()); // 0
 
-// counting.increment();
+counting.increment();
 
-// console.log(counting.value()); // 3
+counting.increment();
 
-// counting.decrement();
+counting.increment();
 
-// counting.decrement();
+console.log(counting.value()); // 3
 
-// console.log(counting.value()); // 1
+counting.decrement();
 
-// console.log(counting.value(100)); // 100
+counting.decrement();
 
-// counting.decrement();
+console.log(counting.value()); // 1
 
-// console.log(counting.value()); // 99
+console.log(counting.value(100)); // 100
 
-// console.log(counting.value(200)); // 200
+counting.decrement();
 
-// counting.increment();
+console.log(counting.value()); // 99
 
-// console.log(counting.value()); // 201
+console.log(counting.value(200)); // 200
+
+counting.increment();
+
+console.log(counting.value()); // 201
 
 /*
  * #3
@@ -76,9 +102,17 @@ console.log('Sample JavaScript #3 HW #15');
  * console.log(myPow(2, 3, myPrint)); // 2^3=8
  */
 
-//  console.log(myPow(3, 4, myPrint)); // 3^4=81
+console.log('===================');
 
-// console.log(myPow(2, 3, myPrint)); // 2^3=8
+const myPow = (a, b, print) => {
+    let calcPow = (x, y) => y!==1 ? x *= calcPow(x, y - 1) : x;
+    return print(a,b,calcPow(a,b));
+}
+
+const myPrint = (a, b, res) => a + '^' + b + '=' + res;
+
+console.log(myPow(3, 4, myPrint)); // 3^4=81
+console.log(myPow(2, 3, myPrint)); // 2^3=8
 
 /*
  * #4
@@ -110,23 +144,73 @@ console.log('Sample JavaScript #3 HW #15');
  * - если сеттеру used присвоено значение 'used', ничего делать не нужно
  */
 
-// let yearNow = new Date().getFullYear(); // получить текущий год как число
+console.log('===================');
 
-// console.log(car.info()); // Chevrolet Lacetti, 2000cc, year 2010, used
+let yearNow = new Date().getFullYear(); // получить текущий год как число
+function fullInfo() {
+    return `${this.name} ${this.model}, ${this.engine}cc, year ${this.year}, ${this.used}`;
+}
 
-// car.used = 'new';
+let car = {
+    engine: 1800,
+    model: 'Corolla',
+    name: 'Toyota',
+    year: 2015,
+    info: fullInfo,
+    get used() {
+        return this.year !== yearNow ? 'used' : 'new';
+    },
+    set used(data) {
+        if (data === 'new' && this.year !== yearNow) this.year = yearNow;
+    }
+}
 
-// console.log(car.info()); // Chevrolet Lacetti, 2000cc, year 2019, new -- год изменен
+console.log(car);
 
-// car.used = 'used';
+let car2 = {
+    engine: 1000,
+    model: 'Micra',
+    name: 'Nissan',
+    year: 2022,
+    info: fullInfo,
+    get used() {
+        return this.year !== yearNow ? 'used' : 'new';
+    },
+    set used(data) {
+        if (data === 'new' && this.year !== yearNow) this.year = yearNow;
+    }
+}
 
-// console.log(car.info()); // Chevrolet Lacetti, 2000cc, year 2019, new -- изменения не выполняются
+let car3 = {
+    engine: 2500,
+    model: 'Jetta',
+    name: 'VW',
+    year: 2010,
+    info: fullInfo,
+    get used() {
+        return this.year !== yearNow ? 'used' : 'new';
+    },
+    set used(data) {
+        if (data === 'new' && this.year !== yearNow) this.year = yearNow;
+    }
+}
 
-// console.log(car2.info()); // Infinite FX50 AWD, 5000cc, year 2019, new
 
-// car.used = 'used';
+console.log(car.info()); // Chevrolet Lacetti, 2000cc, year 2010, used
 
-// console.log(car2.info()); // Infinite FX50 AWD, 5000cc, year 2019, new -- изменения не выполняются
+car.used = 'new';
+
+console.log(car.info()); // Chevrolet Lacetti, 2000cc, year 2019, new -- год изменен
+
+car.used = 'used';
+
+console.log(car.info()); // Chevrolet Lacetti, 2000cc, year 2019, new -- изменения не выполняются
+
+console.log(car2.info()); // Infinite FX50 AWD, 5000cc, year 2019, new
+
+car.used = 'used';
+
+console.log(car2.info()); // Infinite FX50 AWD, 5000cc, year 2019, new -- изменения не выполняются
 
 /*
  * #7
@@ -135,9 +219,12 @@ console.log('Sample JavaScript #3 HW #15');
  * В реализации функции должен быть применен метод Math.max() и apply().
  */
 
-// let list = [12, 23, 100, 34, 56, 9, 233];
+console.log('===================');
 
-// console.log(myMax(list)); // 233
+let list = [12, 23, 100, 34, 56, 9, 233];
+let myMax = (arg) => Math.max.apply(Math, arg);
+
+console.log(myMax(list)); // 233
 
 /*
  * #8
@@ -145,25 +232,35 @@ console.log('Sample JavaScript #3 HW #15');
  * Создайте функцию myMul(a, b), которая будет умножать числа а и b, возвращая результат.
  */
 
+console.log('===================');
+
+function myMul(a,b) {
+    return a * b;
+}
+
 /*
  * создайте функции myDouble(n), которая принимает один параметр и  удваивает его.
  * Использовать умножение или другие математические операции внутри функции – запрещено, только bind() и myMul().
  * Функция возвращает результат вычисления.
  */
 
-// console.log(myDouble(3)); // = myMul(2, 3) = 6
+let myDouble = myMul.bind(null, 2);
 
-// console.log(myDouble(4)); // = myMul(2, 4) = 8
+console.log(myDouble(3)); // = myMul(2, 3) = 6
 
-// console.log(myDouble(5)); // = myMul(2, 5) = 10
+console.log(myDouble(4)); // = myMul(2, 4) = 8
+
+console.log(myDouble(5)); // = myMul(2, 5) = 10
 
 // аналогичным образом создайте функцию myTriple(n), которая утраивает принимающий параметр, возвращая результат.
 
-// console.log(myTriple(3)); // = myMul(3, 3) = 9
+let myTriple = myMul.bind(null, 3);
 
-// console.log(myTriple(4)); // = myMul(3, 4) = 12
+console.log(myTriple(3)); // = myMul(3, 3) = 9
 
-// console.log(myTriple(5)); // = myMul(3, 5) = 15
+console.log(myTriple(4)); // = myMul(3, 4) = 12
+
+console.log(myTriple(5)); // = myMul(3, 5) = 15
 
 /*
  * #9
@@ -175,10 +272,21 @@ console.log('Sample JavaScript #3 HW #15');
  * Любые условные операторы – запрещены и объекты.
  */
 
-// let notUniqNums = [1, 1, 2, 3, 4, 5, 6, 7];
+console.log('===================');
 
-// let notUniqStrings = ['Bob', 'Kate', 'Jhon', 'Tom', 'Jhon', 'Kate', 'Tom', 'Bob', 'Jhon', 'Tom'];
+let notUniqNums = [1, 1, 2, 3, 4, 5, 6, 7];
 
-// console.log(myUniq(notUniqNums));
+let notUniqStrings = ['Bob', 'Kate', 'John', 'Tom', 'John', 'Kate', 'Tom', 'Bob', 'John', 'Tom', 'Dumitru', 'Dumitru'];
 
-// console.log(myUniq(notUniqStrings));
+function myUniq(arr) {
+    let mySet = new Set();
+    arr.forEach((val) => {
+      mySet.add(val);
+    });
+  
+    return mySet;
+}
+
+console.log(myUniq(notUniqNums));
+
+console.log(myUniq(notUniqStrings));
